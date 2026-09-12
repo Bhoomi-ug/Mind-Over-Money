@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import {
   LineChart,
   Line,
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
+import Simulator from "./Simulator";
+import AIInsights from "./AIInsights";
 import "./App.css";
 
 function App() {
@@ -44,9 +47,9 @@ function App() {
         <div className="logo">◈ Mind Over Money</div>
 
         <div className="nav-links">
-          <span>Dashboard</span>
+         <Link to="/">Dashboard</Link>
           <span>AI Insights</span>
-          <span>Simulator</span>
+          <Link to="/simulator">Simulator</Link>
           <span>Learn</span>
         </div>
       </nav>
@@ -244,4 +247,14 @@ function App() {
   );
 }
 
-export default App;
+export default function AppRouter() {
+  return (
+    <BrowserRouter>
+     <Routes>
+  <Route path="/" element={<App />} />
+  <Route path="/simulator" element={<Simulator />} />
+  <Route path="/ai-insights" element={<AIInsights />} />
+</Routes>
+    </BrowserRouter>
+  );
+}
