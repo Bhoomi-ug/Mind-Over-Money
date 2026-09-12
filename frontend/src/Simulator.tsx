@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Simulator() {
   const [balance, setBalance] = useState(100000);
   const [shares, setShares] = useState(0);
   const [message, setMessage] = useState("");
 
-  const stockPrice = 2200.8;
+  const [stockPrice, setStockPrice] = useState(0);
+  useEffect(() => {
+  fetch("http://127.0.0.1:5050/api/stock/TCS")
+    .then((response) => response.json())
+    .then((data) => {
+      setStockPrice(data.price);
+    })
+    .catch(() => {
+      console.log("Unable to fetch stock price");
+    });
+}, []);
 
   const buyStock = () => {
     const quantity = Math.floor(balance / stockPrice);
