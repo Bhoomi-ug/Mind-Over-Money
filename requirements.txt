@@ -1,4 +1,4 @@
-FFlask
+Flask
 flask-cors
 yfinance
 joblib
