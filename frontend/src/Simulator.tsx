@@ -6,12 +6,18 @@ function Simulator() {
   const [message, setMessage] = useState("");
 
   const [stockPrice, setStockPrice] = useState(0);
+  const [aiSignal, setAiSignal] = useState("");
+  const [confidence, setConfidence] = useState(0);
+  const [risk, setRisk] = useState("");
   useEffect(() => {
   fetch("http://127.0.0.1:5050/api/stock/TCS")
     .then((response) => response.json())
     .then((data) => {
-      setStockPrice(data.price);
-    })
+  setStockPrice(data.price);
+  setAiSignal(data.ai_signal);
+  setConfidence(data.confidence);
+  setRisk(data.risk);
+})
     .catch(() => {
       console.log("Unable to fetch stock price");
     });
@@ -44,9 +50,20 @@ function Simulator() {
       </p>
 
       <div style={{ marginTop: "30px" }}>
-        <h2>💰 Virtual Balance</h2>
-        <h1>₹{balance.toLocaleString("en-IN")}</h1>
-      </div>
+  <h2>🤖 AI Analysis</h2>
+
+  <p>
+    AI Signal: <strong>{aiSignal || "Analyzing..."}</strong>
+  </p>
+
+  <p>
+    Confidence: <strong>{confidence ? `${confidence}%` : "—"}</strong>
+  </p>
+
+  <p>
+    Risk: <strong>{risk || "—"}</strong>
+  </p>
+</div>
 
       <div style={{ marginTop: "30px" }}>
         <h2>📈 TCS</h2>
