@@ -12,6 +12,7 @@ function Simulator() {
   const [balance, setBalance] = useState(100000);
   const [shares, setShares] = useState(0);
   const [message, setMessage] = useState("");
+  const [decision, setDecision] = useState("");
 
   const [stockPrice, setStockPrice] = useState(0);
   const [priceHistory, setPriceHistory] = useState<
@@ -73,6 +74,7 @@ const [visiblePrices, setVisiblePrices] = useState<
     const quantity = Math.floor(balance / stockPrice);
 
     if (quantity > 0) {
+        setDecision("BUY");
       setShares(quantity);
       setBalance(balance - quantity * stockPrice);
       setMessage(`You bought ${quantity} shares of TCS.`);
@@ -80,6 +82,7 @@ const [visiblePrices, setVisiblePrices] = useState<
   };
 
   const sellStock = () => {
+    setDecision("SELL");
     if (shares > 0) {
       setBalance(balance + shares * stockPrice);
       setMessage(`You sold ${shares} shares of TCS.`);
@@ -110,6 +113,12 @@ const [visiblePrices, setVisiblePrices] = useState<
     Risk: <strong>{risk || "—"}</strong>
   </p>
 </div>
+{decision && (
+  <div style={{ marginTop: "30px" }}>
+    <h2>🎯 Your Decision</h2>
+    <h2>{decision}</h2>
+  </div>
+)}
 
       <div style={{ marginTop: "30px" }}>
         <h2>📈 TCS</h2>
@@ -148,7 +157,10 @@ const [visiblePrices, setVisiblePrices] = useState<
         <button onClick={buyStock}>BUY</button>
 
         <button
-          onClick={() => setMessage("HOLD decision recorded.")}
+          onClick={() => {
+  setDecision("HOLD");
+  setMessage("HOLD decision recorded.");
+}}
           style={{ marginLeft: "10px" }}
         >
           HOLD
