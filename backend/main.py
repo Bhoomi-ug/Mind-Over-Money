@@ -40,7 +40,7 @@ def create_features(df):
 CORS(app)
 
 # Load our trained ML model
-model = joblib.load("models/tcs_gb_model.pkl")
+model = joblib.load("models/generalized_gb_model.pkl")
 
 
 @app.route("/")
@@ -122,7 +122,13 @@ def stock_info(symbol):
             round(float(price), 2)
             for price in close.tolist()
         ],
-        "risk": "Medium",
+       "risk": (
+    "Low"
+    if latest_features["Volatility_20"] <= features["Volatility_20"].dropna().quantile(0.33)
+    else "Medium"
+    if latest_features["Volatility_20"] <= features["Volatility_20"].dropna().quantile(0.67)
+    else "High"
+),
         "ai_signal": ai_signal,
         "confidence": round(confidence, 2),
         "ml_model": "GradientBoosting"

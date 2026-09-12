@@ -146,7 +146,7 @@ function App() {
                 Risk
               </div>
               <div className="metric-value">
-                Medium
+                {stock?.risk || "—"}
               </div>
             </div>
 
@@ -155,7 +155,9 @@ function App() {
                 AI Signal
               </div>
               <div className="metric-value positive">
-                Bullish
+               <div className="metric-value positive">
+  {stock?.ai_signal || "Analyzing..."}
+</div>
               </div>
             </div>
 
@@ -164,7 +166,7 @@ function App() {
                 Confidence
               </div>
               <div className="metric-value">
-                74.9%
+                 {stock?.confidence ? `${stock.confidence}%` : "—"}
               </div>
             </div>
 
