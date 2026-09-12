@@ -1,4 +1,10 @@
 import { useState } from "react";
+import {
+  LineChart,
+  Line,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import "./App.css";
 
 function App() {
@@ -111,8 +117,25 @@ function App() {
             ● Live market data
           </div>
 
-          <div className="chart"></div>
-
+          <div className="chart">
+  <ResponsiveContainer width="100%" height="100%">
+    <LineChart
+      data={(stock?.prices || []).map((price: number, index: number) => ({
+        day: index + 1,
+        price,
+      }))}
+    >
+      <Line
+        type="monotone"
+        dataKey="price"
+        stroke="#4ade80"
+        strokeWidth={3}
+        dot={false}
+      />
+      <Tooltip />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
           <div className="metrics">
 
             <div className="metric">

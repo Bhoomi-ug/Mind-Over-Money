@@ -53,13 +53,14 @@ def stock_info(symbol):
     latest_price = float(close.iloc[-1])
 
     return jsonify({
-        "symbol": symbol,
-        "price": round(latest_price, 2),
-        "risk": "Medium",
-        "ai_signal": "Bullish",
-        "confidence": 74.9,
-        "ml_model": "GradientBoosting"
-    })
+    "symbol": symbol,
+    "price": round(latest_price, 2),
+    "prices": [round(float(price), 2) for price in close.tolist()],
+    "risk": "Medium",
+    "ai_signal": "Bullish",
+    "confidence": 74.9,
+    "ml_model": "GradientBoosting"
+})
 
 
 if __name__ == "__main__":
