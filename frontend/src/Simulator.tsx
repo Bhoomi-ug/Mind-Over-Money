@@ -1,4 +1,12 @@
 import { useEffect, useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 function Simulator() {
   const [balance, setBalance] = useState(100000);
@@ -6,6 +14,13 @@ function Simulator() {
   const [message, setMessage] = useState("");
 
   const [stockPrice, setStockPrice] = useState(0);
+  const [priceHistory, setPriceHistory] = useState<
+  { day: number; price: number }[]
+>([]);
+
+const [visiblePrices, setVisiblePrices] = useState<
+  { day: number; price: number }[]
+>([]);
   const [aiSignal, setAiSignal] = useState("");
   const [confidence, setConfidence] = useState(0);
   const [risk, setRisk] = useState("");
@@ -17,11 +32,42 @@ function Simulator() {
   setAiSignal(data.ai_signal);
   setConfidence(data.confidence);
   setRisk(data.risk);
+
+  const history = data.prices.map(
+    (price: number, index: number) => ({
+      day: index + 1,
+      price,
+    })
+  );
+
+  setPriceHistory(history);
+  setVisiblePrices([]);
 })
     .catch(() => {
       console.log("Unable to fetch stock price");
     });
 }, []);
+  useEffect(() => {
+    if (priceHistory.length === 0) return;
+
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setVisiblePrices((current) => {
+        if (index >= priceHistory.length) {
+          clearInterval(interval);
+          return current;
+        }
+
+        const next = [...current, priceHistory[index]];
+        index++;
+
+        return next;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [priceHistory]);
 
   const buyStock = () => {
     const quantity = Math.floor(balance / stockPrice);
@@ -69,6 +115,32 @@ function Simulator() {
         <h2>📈 TCS</h2>
         <h2>₹{stockPrice.toLocaleString("en-IN")}</h2>
       </div>
+      <div
+  style={{
+    marginTop: "30px",
+    width: "100%",
+    height: "300px",
+  }}
+>
+  <ResponsiveContainer width="100%" height="100%">
+    <LineChart data={visiblePrices}>
+      <XAxis dataKey="day" />
+      <YAxis domain={["auto", "auto"]} />
+      <Tooltip
+        formatter={(value) =>
+          `₹${Number(value).toLocaleString("en-IN")}`
+        }
+      />
+      <Line
+        type="monotone"
+        dataKey="price"
+        stroke="#4ade80"
+        strokeWidth={3}
+        dot={false}
+      />
+    </LineChart>
+  </ResponsiveContainer>
+</div>
 
       <div style={{ marginTop: "30px" }}>
         <h2>Choose your action</h2>
