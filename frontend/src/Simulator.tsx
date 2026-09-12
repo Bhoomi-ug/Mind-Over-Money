@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import {
   LineChart,
   Line,
@@ -9,8 +10,11 @@ import {
 } from "recharts";
 
 function Simulator() {
+  const [searchParams] = useSearchParams();
+  const selectedSymbol = searchParams.get("symbol") || "TCS";
   const [balance, setBalance] = useState(100000);
   const [shares, setShares] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [message, setMessage] = useState("");
   const [decision, setDecision] = useState("");
 
@@ -26,7 +30,7 @@ const [visiblePrices, setVisiblePrices] = useState<
   const [confidence, setConfidence] = useState(0);
   const [risk, setRisk] = useState("");
   useEffect(() => {
-  fetch("http://127.0.0.1:5050/api/stock/TCS")
+  fetch(`http://127.0.0.1:5050/api/stock/${selectedSymbol}`)
     .then((response) => response.json())
     .then((data) => {
   setStockPrice(data.price);
@@ -47,7 +51,7 @@ const [visiblePrices, setVisiblePrices] = useState<
     .catch(() => {
       console.log("Unable to fetch stock price");
     });
-}, []);
+}, [selectedSymbol]);
   useEffect(() => {
     if (priceHistory.length === 0) return;
 
@@ -71,13 +75,32 @@ const [visiblePrices, setVisiblePrices] = useState<
   }, [priceHistory]);
 
   const buyStock = () => {
-    const quantity = Math.floor(balance / stockPrice);
+    const buyStock = () => {
+  const totalCost = quantity * stockPrice;
+
+  if (quantity <= 0) {
+    setMessage("Please enter a valid number of shares.");
+    return;
+  }
+
+  if (totalCost > balance) {
+    setMessage("Not enough virtual balance.");
+    return;
+  }
+
+  setShares(quantity);
+  setBalance(balance - totalCost);
+  setDecision("BUY");
+  setMessage(
+    `You bought ${quantity} shares of ${selectedSymbol}.`
+  );
+};
 
     if (quantity > 0) {
         setDecision("BUY");
       setShares(quantity);
       setBalance(balance - quantity * stockPrice);
-      setMessage(`You bought ${quantity} shares of TCS.`);
+      setMessage(`You bought ${quantity} shares of ${selectedSymbol}.`);
     }
   };
 
@@ -85,7 +108,7 @@ const [visiblePrices, setVisiblePrices] = useState<
     setDecision("SELL");
     if (shares > 0) {
       setBalance(balance + shares * stockPrice);
-      setMessage(`You sold ${shares} shares of TCS.`);
+      setMessage(`You sold ${shares} shares of ${selectedSymbol}.`);
       setShares(0);
     }
   };
@@ -93,6 +116,10 @@ const [visiblePrices, setVisiblePrices] = useState<
   return (
     <div style={{ padding: "40px", color: "white" }}>
       <h1>Investment Simulator 🎮</h1>
+      <div style={{ marginTop: "20px" }}>
+  <h2>💰 Virtual Balance</h2>
+  <h2>₹{balance.toFixed(2)}</h2>
+</div>
 
       <p>
         Practice investing with virtual money — no real money at risk.
@@ -121,8 +148,26 @@ const [visiblePrices, setVisiblePrices] = useState<
 )}
 
       <div style={{ marginTop: "30px" }}>
-        <h2>📈 TCS</h2>
+        <h2>📈 {selectedSymbol}</h2>
         <h2>₹{stockPrice.toLocaleString("en-IN")}</h2>
+        <div style={{ marginTop: "20px" }}>
+  <label>How many shares do you want to buy?</label>
+
+  <br />
+
+  <input
+    type="number"
+    min="1"
+    value={quantity}
+    onChange={(e) => setQuantity(Number(e.target.value))}
+    style={{
+      marginTop: "10px",
+      padding: "10px",
+      fontSize: "16px",
+      width: "150px",
+    }}
+  />
+</div>
       </div>
       <div
   style={{

@@ -49,7 +49,7 @@ function App() {
         <div className="nav-links">
          <Link to="/">Dashboard</Link>
           <span>AI Insights</span>
-          <Link to="/simulator">Simulator</Link>
+          <Link to={`/simulator?symbol=${symbol}`}>Simulator</Link>
           <span>Learn</span>
         </div>
       </nav>
