@@ -38,7 +38,7 @@ function Simulator() {
 
   // Fetch stock data
   useEffect(() => {
-    fetch(`http://127.0.0.1:5050/api/stock/${selectedSymbol}`)
+    fetch(`https://mind-over-money.onrender.com/api/stock/${selectedSymbol}`)
       .then((response) => response.json())
       .then((data) => {
         setStockPrice(data.price);

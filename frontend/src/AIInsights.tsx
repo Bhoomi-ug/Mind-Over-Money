@@ -19,7 +19,7 @@ function AIInsights() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5050/api/stock/${stockSymbol.toUpperCase()}`
+        `https://mind-over-money.onrender.com/api/stock/${stockSymbol.toUpperCase()}`
       );
 
       if (!response.ok) {

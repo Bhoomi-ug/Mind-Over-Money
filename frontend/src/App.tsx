@@ -24,8 +24,8 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5050/api/stock/${symbol}`
-      );
+  `https://mind-over-money.onrender.com/api/stock/${symbol}`
+);
 
       if (!response.ok) {
         throw new Error("Stock not found");
